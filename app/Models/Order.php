@@ -6,11 +6,22 @@ use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
-    protected $fillable = ['customer_id', 'total_price', 'status'];
+    protected $fillable = [
+        'customer_id',
+        'store_id',
+        'total_price',
+        'status',
+        'payment_method',
+    ];
 
     public function customer()
     {
         return $this->belongsTo(Customer::class);
+    }
+
+    public function store()
+    {
+        return $this->belongsTo(Store::class);
     }
 
     public function details()

@@ -56,6 +56,8 @@ class OrderResource extends Resource
                 Tables\Columns\TextColumn::make('status')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('total_price')
+                    ->label('Total Price')
+                    ->formatStateUsing(fn ($state) => 'Rp. ' . number_format($state, 0, ',', '.'))
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('payment_method')
@@ -72,9 +74,9 @@ class OrderResource extends Resource
             ->filters([
                 //
             ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-            ])
+            // ->actions([
+            //     Tables\Actions\EditAction::make(),
+            // ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
@@ -93,8 +95,8 @@ class OrderResource extends Resource
     {
         return [
             'index' => Pages\ListOrders::route('/'),
-            'create' => Pages\CreateOrder::route('/create'),
-            'edit' => Pages\EditOrder::route('/{record}/edit'),
+            //'create' => Pages\CreateOrder::route('/create'),
+            //'edit' => Pages\EditOrder::route('/{record}/edit'),
         ];
     }
 }

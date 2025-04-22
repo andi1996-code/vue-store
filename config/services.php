@@ -35,4 +35,9 @@ return [
         ],
     ],
 
+    'rajaongkir' => [
+        'komerce_key' => env('SERVICES_RAJAONGKIR_KOMERCE_KEY'),
+    ],
+
+
 ];

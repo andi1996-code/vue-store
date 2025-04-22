@@ -41,7 +41,22 @@ class ProductResource extends Resource
                     ->maxLength(255)
                     ->disabled()
                     ->dehydrated(fn($state) => $state ?? Str::slug($form->state('name'))),
-                Forms\Components\Textarea::make('description')
+                Forms\Components\RichEditor::make('description')
+                    ->toolbarButtons([
+                        'bold',
+                        'italic',
+                        'underline',
+                        'strike',
+                        'link',
+                        'orderedList',
+                        'blockquote',
+                        'unorderedList',
+                        'alignLeft',
+                        'alignCenter',
+                        'alignRight',
+                        'alignJustify',
+                        'numberedList',
+                    ])
                     ->columnSpanFull(),
                 Forms\Components\TextInput::make('price')
                     ->required()
@@ -58,13 +73,16 @@ class ProductResource extends Resource
                     ->label('Gambar Produk')
                     ->schema([
                         Forms\Components\FileUpload::make('url')
-                            ->label('Gambar')
+                            ->label('Unggah Gambar')
                             ->image()
                             ->directory('product-images')
                             ->disk('public')
                             ->visibility('public')
-                            ->required()
                             ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp']),
+                        Forms\Components\TextInput::make('url_link')
+                            ->label('URL Gambar')
+                            ->placeholder('https://example.com/image.jpg')
+                            ->hint('Masukkan URL gambar jika tidak mengunggah file'),
                         Forms\Components\Toggle::make('is_primary')
                             ->label('Utama')
                             ->default(false),

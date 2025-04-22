@@ -3,9 +3,11 @@ import Landing from '../pages/Landing.vue';
 import Catalog from '../pages/Catalog.vue';
 import ProductDetail from '../pages/ProductDetail.vue';
 import Cart from '../pages/Cart.vue';
+import PaymentForm from '../pages/PaymentForm.vue';
+import TestOngkir from '../pages/TestOngkir.vue';
 
 const routes = [
-    { path: '/', component: Landing },
+    { path: '/', component: Catalog },
     {
         path: '/katalog',
         name: 'katalog',
@@ -20,6 +22,16 @@ const routes = [
         path: '/cart',
         name: 'cart',
         component: Cart
+    },
+    {
+        path: '/pembayaran',
+        name: 'payment',
+        component: PaymentForm
+    },
+    {
+        path: '/tes-ongkir',
+        name: 'tes.ongkir',
+        component: TestOngkir
     },
 ];
 
