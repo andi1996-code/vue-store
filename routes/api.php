@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\CustomerController;
 use App\Http\Controllers\Api\OrderController;
 
 Route::get('products', [ProductController::class, 'index']);
+Route::get('/products/search', [ProductController::class, 'search']);
 Route::get('products/{id}', [ProductController::class, 'show']);
 Route::post('customers', [CustomerController::class, 'store']);
 Route::post('/customers/find-or-create', [CustomerController::class, 'findOrCreate']);
