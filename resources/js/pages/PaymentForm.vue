@@ -118,10 +118,10 @@ const customer = ref({
 })
 
 // Form data
-const address = ref('')
-const cartItems = ref([])
-const isSubmitting = ref(false)
-const paymentMethod = ref('') // Add this line
+const address = ref('');
+const paymentMethod = ref('transfer'); // Default ke transfer
+const cartItems = ref([]);
+const isSubmitting = ref(false);
 
 // Computed properties
 const subtotal = computed(() => {
@@ -140,6 +140,15 @@ const handleSubmit = async () => {
         return;
     }
 
+    // Simpan alamat ke localStorage
+    localStorage.setItem('address', address.value);
+
+    // Lanjutkan proses pembayaran...
+    if (!paymentMethod.value) {
+        alert('Harap pilih metode pembayaran');
+        return;
+    }
+
     isSubmitting.value = true;
 
     try {
@@ -153,48 +162,24 @@ const handleSubmit = async () => {
 
         // 2. Buat order
         const orderData = {
-            customer_id: customer.value.id,
+            customer_id: customerId,
             address: address.value,
+            payment_method: paymentMethod.value, // Tambahkan metode pembayaran
             items: cartItems.value.map(item => ({
                 id: item.id,
                 quantity: item.quantity,
             })),
-            payment_method: paymentMethod.value, // Add this line
         };
 
         const response = await apiClient.post('/orders', orderData);
+        console.log('Response dari /orders:', response.data);
 
-        // Tampilkan animasi loading sukses
-        const successIcon = document.createElement('div');
-        successIcon.innerHTML = `
-            <div class="flex items-center justify-center">
-            <svg class="animate-spin h-8 w-8 text-green-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-            </div>
-        `;
-        document.body.appendChild(successIcon);
-
-        setTimeout(() => {
-            successIcon.innerHTML = `
-            <div class="flex items-center justify-center">
-                <svg class="h-8 w-8 text-green-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-                </svg>
-            </div>
-            `;
-            setTimeout(() => {
-            document.body.removeChild(successIcon);
-            }, 2000);
-        }, 2000);
-        sessionStorage.setItem('shipping_address', address.value);
-
+        // Ambil ID pesanan dari respons
+        const orderId = response.data.order_id;
         localStorage.removeItem('cart');
         cartItems.value = [];
-
-        // Redirect ke katalog setelah sukses
-        router.push('/katalog');
+        // Redirect ke halaman OrderStatus dengan ID pesanan
+        router.push({ name: 'order.status', params: { id: orderId } });
     } catch (error) {
         console.error('Gagal memproses pembayaran:', error.response?.data || error.message);
         alert('Terjadi kesalahan saat memproses pembayaran. Silakan coba lagi.');

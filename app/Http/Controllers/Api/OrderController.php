@@ -93,12 +93,21 @@ class OrderController extends Controller
 
     public function show($id)
     {
-        $order = Order::find($id);
+        $order = Order::with('customer')->find($id);
 
         if (!$order) {
             return response()->json(['message' => 'Order not found'], 404);
         }
 
-        return response()->json($order);
+        return response()->json([
+            'id' => $order->id,
+            'customer' => [
+                'name' => $order->customer->name,
+                'phone' => $order->customer->phone,
+            ],
+            'address' => $order->address,
+            'payment_method' => $order->payment_method,
+            'status' => $order->status,
+        ]);
     }
 }

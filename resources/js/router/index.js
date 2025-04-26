@@ -5,6 +5,7 @@ import ProductDetail from '../pages/ProductDetail.vue';
 import Cart from '../pages/Cart.vue';
 import PaymentForm from '../pages/PaymentForm.vue';
 import TestOngkir from '../pages/TestOngkir.vue';
+import OrderStatus from '../pages/OrderStatus.vue';
 
 const routes = [
     { path: '/', component: Catalog },
@@ -29,10 +30,11 @@ const routes = [
         component: PaymentForm
     },
     {
-        path: '/tes-ongkir',
-        name: 'tes.ongkir',
-        component: TestOngkir
+        path: '/order-status:id',
+        name: 'order.status',
+        component: () => import('../pages/OrderStatus.vue')
     },
+
 ];
 
 const router = createRouter({
