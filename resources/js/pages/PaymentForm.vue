@@ -143,6 +143,7 @@ const handleSubmit = async () => {
     // Simpan alamat ke localStorage
     localStorage.setItem('address', address.value);
 
+
     // Lanjutkan proses pembayaran...
     if (!paymentMethod.value) {
         alert('Harap pilih metode pembayaran');
@@ -176,6 +177,8 @@ const handleSubmit = async () => {
 
         // Ambil ID pesanan dari respons
         const orderId = response.data.order_id;
+
+        localStorage.setItem('lastOrderId', orderId);
         localStorage.removeItem('cart');
         cartItems.value = [];
         // Redirect ke halaman OrderStatus dengan ID pesanan
