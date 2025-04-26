@@ -43,6 +43,21 @@
                 </div>
             </div>
 
+            <!-- Metode Pembayaran -->
+            <div class="bg-white shadow-md p-6 rounded-lg mb-6 border border-gray-200">
+                <h2 class="text-xl font-semibold mb-4 text-gray-700">Metode Pembayaran</h2>
+                <div class="space-y-2">
+                    <label class="flex items-center">
+                        <input type="radio" v-model="paymentMethod" value="transfer" class="mr-2">
+                        Transfer Bank
+                    </label>
+                    <label class="flex items-center">
+                        <input type="radio" v-model="paymentMethod" value="cod" class="mr-2">
+                        Cash on Delivery (COD)
+                    </label>
+                </div>
+            </div>
+
             <!-- Detail Produk -->
             <div class="bg-white shadow-md p-6 rounded-lg mb-6 border border-gray-200">
                 <h2 class="text-xl font-semibold mb-4 text-gray-700">Detail Produk</h2>
@@ -106,6 +121,7 @@ const customer = ref({
 const address = ref('')
 const cartItems = ref([])
 const isSubmitting = ref(false)
+const paymentMethod = ref('') // Add this line
 
 // Computed properties
 const subtotal = computed(() => {
@@ -143,6 +159,7 @@ const handleSubmit = async () => {
                 id: item.id,
                 quantity: item.quantity,
             })),
+            payment_method: paymentMethod.value, // Add this line
         };
 
         const response = await apiClient.post('/orders', orderData);

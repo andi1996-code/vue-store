@@ -13,4 +13,5 @@ Route::post('/customers/find-or-create', [CustomerController::class, 'findOrCrea
 Route::get('/customers/lookup', [CustomerController::class, 'lookup']);
 //api order
 Route::post('orders', [OrderController::class, 'checkout']);
+Route::get('/orders/{id}', [OrderController::class, 'show']);
 

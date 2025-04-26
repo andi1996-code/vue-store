@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\OrderResource\Pages;
 use App\Filament\Resources\OrderResource\RelationManagers;
+use App\Filament\Resources\OrderResource\RelationManagers\OrderDetailRelationManager;
 use App\Models\Order;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -25,19 +26,27 @@ class OrderResource extends Resource
             ->schema([
                 Forms\Components\Select::make('store_id')
                     ->relationship('store', 'name')
-                    ->required(),
+                    ->required()
+                    ->disabled(),
                 Forms\Components\Select::make('customer_id')
                     ->relationship('customer', 'name')
-                    ->required(),
-                Forms\Components\TextInput::make('status')
                     ->required()
-                    ->maxLength(255)
+                    ->disabled(),
+                Forms\Components\Select::make('status')
+                    ->required()
+                    ->options([
+                        'pending' => 'Pending',
+                        'tolak' => 'Tolak',
+                        'terima' => 'Terima',
+                    ])
                     ->default('pending'),
                 Forms\Components\TextInput::make('total_price')
                     ->required()
-                    ->numeric(),
+                    ->numeric()
+                    ->disabled(),
                 Forms\Components\TextInput::make('payment_method')
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->disabled(),
             ]);
     }
 
@@ -53,19 +62,35 @@ class OrderResource extends Resource
                     ->label('Customer')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('status')
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('Order Date')
+                    ->dateTime()
+                    ->sortable()
                     ->searchable(),
+                Tables\Columns\TextColumn::make('status')
+                    ->searchable()
+                    ->label('Status')
+                    ->formatStateUsing(fn($state) => ucfirst($state))  // Untuk memastikan status muncul dengan huruf kapital pertama
+                    ->color(function ($state) {
+                        // Tentukan warna berdasarkan nilai status
+                        if ($state === 'tolak') {
+                            return 'danger';  // Merah
+                        } elseif ($state === 'terima') {
+                            return 'success';  // Hijau
+                        } elseif ($state === 'menunggu') {
+                            return 'warning';  // Oranye
+                        }
+
+                        return '';  // Default tanpa warna
+                    })
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('total_price')
                     ->label('Total Price')
-                    ->formatStateUsing(fn ($state) => 'Rp. ' . number_format($state, 0, ',', '.'))
+                    ->formatStateUsing(fn($state) => 'Rp. ' . number_format($state, 0, ',', '.'))
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('payment_method')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
@@ -74,9 +99,9 @@ class OrderResource extends Resource
             ->filters([
                 //
             ])
-            // ->actions([
-            //     Tables\Actions\EditAction::make(),
-            // ])
+            ->actions([
+                Tables\Actions\EditAction::make(),
+            ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
@@ -87,16 +112,22 @@ class OrderResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            \App\Filament\Resources\OrderDetailRelationManagerResource\RelationManagers\OrderDetailsRelationManager::class,
         ];
     }
+
 
     public static function getPages(): array
     {
         return [
             'index' => Pages\ListOrders::route('/'),
-            //'create' => Pages\CreateOrder::route('/create'),
-            //'edit' => Pages\EditOrder::route('/{record}/edit'),
+            'create' => Pages\CreateOrder::route('/create'),
+            'edit' => Pages\EditOrder::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->orderBy('created_at', 'desc');
     }
 }

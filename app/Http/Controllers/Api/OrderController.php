@@ -20,6 +20,7 @@ class OrderController extends Controller
             $validated = $request->validate([
                 'customer_id' => 'required|exists:customers,id',
                 'items' => 'required|array',
+                'payment_method' => 'required|string|max:255',
                 'items.*.id' => 'required|exists:products,id',
                 'items.*.quantity' => 'required|integer|min:1',
             ]);
@@ -53,7 +54,7 @@ class OrderController extends Controller
                     'store_id' => $storeId,
                     'total_price' => $totalPrice,
                     'status' => 'pending',
-                    'payment_method' => 'manual_transfer', // default sementara
+                    'payment_method' => $validated['payment_method'],
                 ]);
 
 
@@ -88,5 +89,16 @@ class OrderController extends Controller
 
             return response()->json(['message' => 'Checkout gagal!', 'error' => $e->getMessage()], 400);
         }
+    }
+
+    public function show($id)
+    {
+        $order = Order::find($id);
+
+        if (!$order) {
+            return response()->json(['message' => 'Order not found'], 404);
+        }
+
+        return response()->json($order);
     }
 }
