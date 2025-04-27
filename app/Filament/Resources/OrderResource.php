@@ -35,9 +35,9 @@ class OrderResource extends Resource
                 Forms\Components\Select::make('status')
                     ->required()
                     ->options([
-                        'pending' => 'Pending',
+                        'proses' => 'Proses',
                         'tolak' => 'Tolak',
-                        'terima' => 'Terima',
+                        'selesai' => 'Selesai',
                     ])
                     ->default('pending'),
                 Forms\Components\TextInput::make('total_price')
@@ -54,8 +54,12 @@ class OrderResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('store.name')
-                    ->label('Store')
+                // Tables\Columns\TextColumn::make('store.name')
+                //     ->label('Store')
+                //     ->sortable()
+                //     ->searchable(),
+                Tables\Columns\TextColumn::make('id')
+                    ->label('Order ID')
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('customer.name')
@@ -72,17 +76,20 @@ class OrderResource extends Resource
                     ->label('Status')
                     ->formatStateUsing(fn($state) => ucfirst($state))  // Untuk memastikan status muncul dengan huruf kapital pertama
                     ->color(function ($state) {
-                        // Tentukan warna berdasarkan nilai status
+                        // Samakan teks supaya seragam
+                        $state = strtolower($state);
+
                         if ($state === 'tolak') {
-                            return 'danger';  // Merah
-                        } elseif ($state === 'terima') {
-                            return 'success';  // Hijau
-                        } elseif ($state === 'menunggu') {
-                            return 'warning';  // Oranye
+                            return 'danger';   // Merah untuk Tolak
+                        } elseif ($state === 'proses') {
+                            return 'warning';  // Kuning untuk Proses
+                        } elseif ($state === 'selesai') {
+                            return 'success';  // Hijau untuk Selesai
                         }
 
-                        return '';  // Default tanpa warna
+                        return 'secondary';    // Default warna abu-abu
                     })
+
                     ->sortable(),
                 Tables\Columns\TextColumn::make('total_price')
                     ->label('Total Price')

@@ -64,20 +64,15 @@ export default {
     },
     computed: {
         statusClass() {
-            if (!this.order?.status) return "";
-            switch (this.order.status.toLowerCase()) {
-                case "selesai":
-                case "terima":
-                    return "text-green-600 font-bold";
-                case "tolak":
-                    return "text-red-600 font-bold";
-                case "menunggu":
-                    return "text-orange-500 font-bold";
-                default:
-                    return "text-gray-600 font-bold";
-            }
+            const classes = {
+                proses: "text-yellow-500 font-bold",
+                selesai: "text-green-500 font-bold",
+                tolak: "text-red-600 font-bold",
+            };
+            return classes[this.order?.status?.toLowerCase()] || "text-gray-600 font-bold";
         },
     },
+
     methods: {
         async fetchOrder() {
             try {

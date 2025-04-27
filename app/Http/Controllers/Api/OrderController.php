@@ -53,7 +53,7 @@ class OrderController extends Controller
                     'customer_id' => $validated['customer_id'],
                     'store_id' => $storeId,
                     'total_price' => $totalPrice,
-                    'status' => 'pending',
+                    'status' => 'Proses',
                     'payment_method' => $validated['payment_method'],
                 ]);
 
